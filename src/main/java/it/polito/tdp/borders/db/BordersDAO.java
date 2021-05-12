@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import it.polito.tdp.borders.model.Border;
 import it.polito.tdp.borders.model.Country;
@@ -35,10 +36,66 @@ public class BordersDAO {
 			throw new RuntimeException("Error Connection Database");
 		}
 	}
+	
+	public void loadCountries(Map<Integer,Country>mappaCountries, int anno) {
+		
+		String sql = "SELECT StateAbb as abb, CCode as code, StateNme as name "+
+				"FROM country c, contiguity co "+
+				"WHERE (c.CCode=co.state1no OR c.CCode=co.state2no) AND co.year<=? AND co.conttype=1 "+
+				"GROUP BY c.CCode";
+	
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, anno);
+			ResultSet rs = st.executeQuery();
 
-	public List<Border> getCountryPairs(int anno) {
+			while (rs.next()) {
+				Country ctemp=new Country(rs.getString("abb"),rs.getInt("code"),rs.getString("name"));
+				mappaCountries.put(ctemp.getCode(), ctemp);
+			}
+			
+			conn.close();
 
-		System.out.println("TODO -- BordersDAO -- getCountryPairs(int anno)");
-		return new ArrayList<Border>();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+		
 	}
+
+	public List<Border> getCountryPairs(int anno, Map<Integer, Country>mappa) {
+		
+		String sql = "SELECT state1no, state2no "+
+				"FROM contiguity AS con "+
+				"WHERE con.year<=? AND con.conttype=1 "+
+				"GROUP BY con.dyad";
+		
+		List<Border>result=new ArrayList<Border>();	
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, anno);
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				
+				Country c1=mappa.get(rs.getInt("state1no"));
+				Country c2=mappa.get(rs.getInt("state2no"));
+				Border btemp=new Border(c1,c2);
+				result.add(btemp);
+				
+			}
+			
+			conn.close();
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+	}
+	
 }

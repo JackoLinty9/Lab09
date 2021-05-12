@@ -1,4 +1,3 @@
-
 package it.polito.tdp.borders;
 
 import java.net.URL;
@@ -28,7 +27,30 @@ public class FXMLController {
 
     @FXML
     void doCalcolaConfini(ActionEvent event) {
-
+    	
+    	txtResult.clear();
+    	String anno=txtAnno.getText();
+    	boolean ok = false;
+    	int annoNum;
+    	
+    	try {
+    		annoNum = Integer.parseInt(anno);
+    		if(annoNum >= 1816 && annoNum <= 2016)
+    			ok = true;
+    	}
+    	catch(NumberFormatException nfe) {
+    		txtResult.setText("Inserire un numero");
+    		return;
+    	}
+    	if(ok) {
+    		model.creaGrafo(annoNum);
+    		txtResult.setText(""+model.getNumberOfConnectedComponents()+"\n");
+    	    txtResult.appendText(""+model.getGradoVertici());
+    	}
+    	else {
+    		txtResult.setText("Inserire un anno compreso tra 1816 e 2016");
+    		return;
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
