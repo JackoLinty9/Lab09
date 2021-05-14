@@ -37,7 +37,7 @@ public class BordersDAO {
 		}
 	}
 	
-	public void loadCountries(Map<Integer,Country>mappaCountries, int anno) {
+	public void getVertici(Map<Integer,Country>mappaCountries, int anno) {
 		
 		String sql = "SELECT StateAbb as abb, CCode as code, StateNme as name "+
 				"FROM country c, contiguity co "+
@@ -65,12 +65,11 @@ public class BordersDAO {
 		
 	}
 
-	public List<Border> getCountryPairs(int anno, Map<Integer, Country>mappa) {
+	public List<Border> getArchi(int anno, Map<Integer, Country> mappa) { //passo come parametro la mappa con vertici del grafo
 		
 		String sql = "SELECT state1no, state2no "+
 				"FROM contiguity AS con "+
-				"WHERE con.year<=? AND con.conttype=1 "+
-				"GROUP BY con.dyad";
+				"WHERE con.year<=? AND con.conttype=1 AND state1no<state2no";
 		
 		List<Border>result=new ArrayList<Border>();	
 		try {

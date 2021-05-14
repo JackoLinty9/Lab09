@@ -1,6 +1,7 @@
 package it.polito.tdp.borders.model;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class TestModel {
@@ -21,9 +22,9 @@ public class TestModel {
 
 		System.out.format("Numero componenti connesse: %d\n", model.getNumberOfConnectedComponents());
 		
-//		Map<Country, Integer> stats = model.getCountryCounts();
-//		for (Country country : stats.keySet())
-//			System.out.format("%s %d\n", country, stats.get(country));		
+//    	Map<Country, Integer> stats = model.getCountryCounts();
+//     	for (Country country : stats.keySet())
+//		System.out.format("%s %d\n", country, stats.get(country));		
 		
 	}
 
